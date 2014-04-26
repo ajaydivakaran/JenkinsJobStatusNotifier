@@ -1,0 +1,22 @@
+{
+    "manifest_version": 2,
+    "name": "Jenkins Job Status Notifier",
+    "description": "This extension allow you to track the status of your Jenkin's jobs.",
+    "version": "1.0",
+    "permissions": [
+        "http://*/",
+        "storage"
+    ],
+    "options_page": "html/options.html",
+    "background": {
+      "scripts": ["js/jobStatusNotifier.js"]
+    },
+    "browser_action": {
+        "default_icon": "images/green_imagelink.png",
+        "default_title": "Jenkins Job Notifier",
+        "default_popup": "popup.html"
+    }
+}
+
+
+

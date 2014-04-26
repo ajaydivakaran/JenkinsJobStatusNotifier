@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Configure Jenkins's Job Status Notifier</title>
+    <script src="../libs/jquery.js"></script>
+    <style>
+        input{
+            width: 200px;
+            height: 20px;
+        }
+        .input_field_section{
+            margin: 10px;
+        }
+        .primary_input{
+            border-style: solid;
+            border-width: 2px;
+            width: 400px;
+        }
+    </style>
+</head>
+<body>
+    <h3>Configure Jenkin's Job Status Notifier</h3>
+    <div class="primary_input">
+        <div class="input_field_section">
+            <label for="serverUrl">Jenkin's Server URL:</label>
+            <input type="text" id="serverUrl" placeholder="ipaddress:port" />
+        </div>
+        <div class="input_field_section">
+            <label for="userName">User name:</label>
+            <input type="text" id="userName" placeholder="jenkins user name" />
+        </div>
+        <div class="input_field_section">
+            <label for="apiKey">API key:</label>
+            <input type="text" id="apiKey" placeholder="jenkins user's api key" />
+        </div>
+    </div>
+</body>
+</html>
