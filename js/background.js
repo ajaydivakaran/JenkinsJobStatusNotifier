@@ -1,10 +1,10 @@
 window.jobStatusNotifier = (function(){
 
     function _constructJobStatusQueryUrl(items){
-        var userName = items['userName'].trim();
-        var apiKey = items['apiKey'].trim();
-        var serverUrl = items['serverUrl'].trim();
-        var jobName = items['jobName'].trim();
+        var userName = items['userName'];
+        var apiKey = items['apiKey'];
+        var serverUrl = items['serverUrl'];
+        var jobName = items['jobName'];
 
         return "http://" + userName + ":" + apiKey  + "@" + serverUrl + "/job/" + jobName + "/api/json?depth=0";
     }
@@ -15,16 +15,16 @@ window.jobStatusNotifier = (function(){
         $.get(url, function(response){
             var isLatestRunSuccessful = response['color'] == 'blue';
             var jobName = response['displayName'];
-            var imageName = isLatestRunSuccessful ? "green_info.png" : "red_info.png"
+            var imagePath = isLatestRunSuccessful ? "../images/green_info.png" : "../images/red_info.png";
             postQueryCallback({
                 jobName: jobName,
                 isLatestRunSuccessful: isLatestRunSuccessful,
-                imageName: imageName
+                imagePath: imagePath
             });
         });
     }
 
-    function _getConfiguredJobsStatuses(postQueryCallback){
+    function getConfiguredJobsStatuses(postQueryCallback){
         chrome.storage.sync.get({
              serverUrl: null,
              userName: null,
@@ -54,14 +54,15 @@ window.jobStatusNotifier = (function(){
                 type: "basic",
                 title: jobResult.jobName,
                 message: jobResult.jobName + statusMessage,
-                iconUrl: "../images/" + jobResult.imageName
+                iconUrl: jobResult.imagePath
             }, function(){});
 
         };
-        _getConfiguredJobsStatuses(_createNotificationHandler);
+        getConfiguredJobsStatuses(_createNotificationHandler);
     }
 
     return {
-        alarmEventHandler: alarmEventHandler
+        alarmEventHandler: alarmEventHandler,
+        getConfiguredJobStatuses: getConfiguredJobsStatuses
     };
 }());
