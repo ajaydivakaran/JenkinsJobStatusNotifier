@@ -16,7 +16,7 @@
     "browser_action": {
         "default_icon": "images/green_imagelink.png",
         "default_title": "Jenkins Job Notifier",
-        "default_popup": "popup.html"
+        "default_popup": "html/popup.html"
     }
 }
 

@@ -2,9 +2,8 @@
 <html>
 <head>
     <title>Configure Jenkins's Job Status Notifier</title>
-    <script src="../libs/jquery.js"></script>
+    <script src="../libs/jquery-1.11.0.min.js"></script>
     <script src="../libs/notify.min.js"></script>
-    <script src="../libs/knockout.js"></script>
     <script src="../js/options.js"></script>
 
     <style>
@@ -21,9 +20,6 @@
             width: 400px;
             margin-top: 5px;
         }
-        .job{
-            margin-bottom: 5px;
-        }
         #pollingFrequency{
             width: 50px;
         }
@@ -37,44 +33,30 @@
     <div class="primary_input">
         <div class="input_field_section">
             <label for="serverUrl">Jenkin's Server URL:</label>
-            <input type="text" data-bind="value: serverUrl" id="serverUrl" placeholder="ipaddress:port" />
+            <input type="text" id="serverUrl" placeholder="ipaddress:port" />
         </div>
         <div class="input_field_section">
             <label for="userName">User name:</label>
-            <input type="text" data-bind="value: userName" id="userName" placeholder="jenkins user name" />
+            <input type="text" id="userName" placeholder="jenkins user name" />
         </div>
         <div class="input_field_section">
             <label for="apiKey">API key:</label>
-            <input type="text" data-bind="value: apiKey" id="apiKey" placeholder="jenkins user's api key" />
+            <input type="text" id="apiKey" placeholder="jenkins user's api key" />
         </div>
         <div class="input_field_section">
-            <label for="pollingFrequency">Polling frequency ( in seconds):</label>
-            <input type="text" data-bind="value: pollingFrequency" id="pollingFrequency" placeholder="seconds" />
+            <label for="pollingFrequency">Polling frequency:</label>
+            <input type="text" id="pollingFrequency" placeholder="minutes" />
         </div>
         <div class="input_field_section">
             <label for="enableNotifications">Enable Notifications:</label>
-            <input type="checkbox" data-bind="value: enableNotifications" id="enableNotifications" />
+            <input type="checkbox" id="enableNotifications" />
         </div>
-        <div id="updatePrimaryData">
-            <Button data-bind="click: updatePrimaryData">Update</Button>
-            <div data-bind="text: updatePrimaryDataMessage"></div>
-        </div>
-    </div>
-    <div>
-        <h4>Jobs</h4>
-        <div id="job_list">
-            <ul data-bind="foreach: jobs ">
-                <li class="job">
-                   <span data-bind="text: $data"></span>
-                   <button data-bind="click: $parent.removeJob">Remove</button>
-                </li>
-            </ul>
+         <div class="input_field_section">
+            <label for="jobs">Jobs:</label>
+            <input type="text" id="jobs" placeholder="Enter Job names" />
         </div>
         <div>
-            <label for="newJobName">New job name:</label>
-            <input type="text" id="newJobName" data-bind="value: newJobName" placeholder="Enter new job name" />
-            <button id="addJob" data-bind="click: addJob">Add Job</button>
-            <div data-bind="text: addJobMessage"></div>
+            <Button id="updateData">Update</Button>
         </div>
     </div>
 </body>

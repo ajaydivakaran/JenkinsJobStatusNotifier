@@ -1,36 +1,21 @@
 var optionsViewModel = (function(){
 
-    var jobs = ko.observableArray([]);
-    var serverUrl = ko.observable();
-    var userName = ko.observable();
-    var apiKey = ko.observable();
-    var pollingFrequency = ko.observable();
-    var enableNotifications = ko.observable();
-    var newJobName = ko.observable();
-    var addJobMessage = ko.observable();
-    var updatePrimaryDataMessage = ko.observable();
+    var jobs;
+    var serverUrl;
+    var userName;
+    var apiKey;
+    var pollingFrequency;
+    var enableNotifications;
 
-    function addJob(){
-        if(newJobName()){
-            jobs.push(newJobName());
-            newJobName("");
-            _updateJobs();
-            addJobMessage("Added Successfully");
-        }
-        else{
-            addJobMessage("Failed to add");
-        }
-    }
-
-    function removeJob(jobName){
-        jobs.remove(jobName);
-        _updateJobs();
-    }
-
-    function _updateJobs(){
-        chrome.storage.sync.set({jobs: jobs()}, function(){
-            console.log("Update of jobs successful");
-        });
+    function initialize(){
+        jobs = $("#jobs");
+        serverUrl = $("#serverUrl");
+        userName = $("#userName");
+        apiKey = $("#apiKey");
+        pollingFrequency = $("#pollingFrequency");
+        enableNotifications = $("#enableNotifications");
+        $("#updateData").on('click', _updatePrimaryData);
+        _loadSettings();
     }
 
     function _loadSettings(){
@@ -38,57 +23,48 @@ var optionsViewModel = (function(){
              serverUrl: null,
              userName: null,
              apiKey: null,
-             pollingFrequency: "60",
+             pollingFrequency: "1",
              enableNotifications: true,
-             jobs: []
+             jobs: null
         }, function(items){
-           serverUrl(items['serverUrl']);
-           userName(items['userName']);
-           apiKey(items['apiKey']);
-           pollingFrequency(items['pollingFrequency']);
-           enableNotifications(items['enableNotifications']);
-           jobs(items['jobs']);
+           serverUrl.val(items['serverUrl']);
+           userName.val(items['userName']);
+           apiKey.val(items['apiKey']);
+           pollingFrequency.val(items['pollingFrequency']);
+           enableNotifications.prop("checked", items['enableNotifications']);
+           jobs.val(items['jobs']);
         });
     }
 
-    function updatePrimaryData(){
+    function _updatePrimaryData(){
         chrome.storage.sync.set({
-                 serverUrl: serverUrl(),
-                 userName: userName(),
-                 apiKey: apiKey(),
-                 pollingFrequency: pollingFrequency(),
-                 enableNotifications: enableNotifications()
+                 jobs: jobs.val(),
+                 serverUrl: serverUrl.val(),
+                 userName: userName.val(),
+                 apiKey: apiKey.val(),
+                 pollingFrequency: pollingFrequency.val(),
+                 enableNotifications: enableNotifications.is(":checked")
             }, function() {
             console.log("Save of primary data successful");
             updatePrimaryDataMessage('Save Successful');
             $.notify("Save Successful");
+
             chrome.alarms.clear("jobStatusTimer");
+
+            var pollingFrequencyInMinutes = parseFloat(pollingFrequency.val());
             chrome.alarms.create("jobStatusTimer", {
-                                delayInMinutes: parseFloat(pollingFrequency()),
-                                periodInMinutes: parseFloat(pollingFrequency())
+                                delayInMinutes: pollingFrequencyInMinutes,
+                                periodInMinutes: pollingFrequencyInMinutes
             });
         });
 
     }
 
-    _loadSettings();
-
     return {
-        jobs: jobs,
-        serverUrl: serverUrl,
-        userName: userName,
-        apiKey: apiKey,
-        newJobName: newJobName,
-        addJobMessage: addJobMessage,
-        updatePrimaryDataMessage: updatePrimaryDataMessage,
-        pollingFrequency: pollingFrequency,
-        enableNotifications: enableNotifications,
-        addJob: addJob,
-        removeJob: removeJob,
-        updatePrimaryData: updatePrimaryData
+        init: initialize
     };
 }());
 
 $(function(){
-    ko.applyBindings(optionsViewModel);
+   optionsViewModel.init();
 });
