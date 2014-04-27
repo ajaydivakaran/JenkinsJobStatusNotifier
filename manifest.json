@@ -10,14 +10,12 @@
         "alarms"
     ],
     "options_page": "html/options.html",
-    "background": {
-      "page": "html/background.html"
-    },
     "browser_action": {
         "default_icon": "images/green_imagelink.png",
         "default_title": "Jenkins Job Notifier",
         "default_popup": "html/popup.html"
-    }
+    },
+    "web_accessible_resources": ["images/green_info.png"]
 }
 
 

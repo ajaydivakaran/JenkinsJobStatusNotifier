@@ -45,9 +45,7 @@ var optionsViewModel = (function(){
                  pollingFrequency: pollingFrequency.val(),
                  enableNotifications: enableNotifications.is(":checked")
             }, function() {
-            console.log("Save of primary data successful");
-            updatePrimaryDataMessage('Save Successful');
-            $.notify("Save Successful");
+            $.notify("Save Successful", "success");
 
             chrome.alarms.clear("jobStatusTimer");
 
@@ -56,9 +54,65 @@ var optionsViewModel = (function(){
                                 delayInMinutes: pollingFrequencyInMinutes,
                                 periodInMinutes: pollingFrequencyInMinutes
             });
+            initializeAlarmEventHandler();
         });
 
     }
+
+    function _constructUrl(items){
+        var userName = items['userName'].trim();
+        var apiKey = items['apiKey'].trim();
+        var serverUrl = items['serverUrl'].trim();
+        var jobName = items['jobName'].trim();
+        return "http://" + userName + ":" + apiKey  + "@" + serverUrl + "/job/" + jobName + "/api/json";
+    }
+
+    function initializeAlarmEventHandler(){
+        chrome.alarms.onAlarm.addListener(function(alarm){
+            if(alarm.name != 'jobStatusTimer'){
+                return;
+            }
+
+        chrome.storage.sync.get({
+             serverUrl: null,
+             userName: null,
+             apiKey: null,
+             enableNotifications: true,
+             jobs: null
+        }, function(items){
+           var jobList = items['jobs'];
+           var jobs = jobList.split(",");
+            $.each(jobs, function(index, job){
+                var url = _constructUrl({
+                    userName: items['userName'],
+                    apiKey: items['apiKey'],
+                    serverUrl: items['serverUrl'],
+                    jobName: job
+                });
+
+                $.get(url, function(response){
+                    var isLatestJobSuccessful = response['color'] == 'blue';
+                    var jobName = response['displayName'];
+                    var imageName = isLatestJobSuccessful ? "green_info.png" : "red_info.png"
+                    var statusMessage = isLatestJobSuccessful ? " is Green" : " is Red";
+                    chrome.notifications.create("", {
+                        type: "basic",
+                        title: jobName,
+                        message: jobName + statusMessage,
+                        iconUrl: "../images/" + imageName
+                    }, function(){});
+
+                });
+
+            });
+
+        });
+
+
+
+        });
+    }
+
 
     return {
         init: initialize
