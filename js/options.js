@@ -33,6 +33,24 @@ var optionsViewModel = (function(){
         });
     }
 
+    function _loadSettings(){
+        chrome.storage.sync.get({
+             serverUrl: null,
+             userName: null,
+             apiKey: null,
+             pollingFrequency: "60",
+             enableNotifications: true,
+             jobs: []
+        }, function(items){
+           serverUrl(items['serverUrl']);
+           userName(items['userName']);
+           apiKey(items['apiKey']);
+           pollingFrequency(items['pollingFrequency']);
+           enableNotifications(items['enableNotifications']);
+           jobs(items['jobs']);
+        });
+    }
+
     function updatePrimaryData(){
         chrome.storage.sync.set({
                  serverUrl: serverUrl(),
@@ -46,6 +64,7 @@ var optionsViewModel = (function(){
         });
     }
 
+    _loadSettings();
 
     return {
         jobs: jobs,
