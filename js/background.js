@@ -9,6 +9,21 @@ window.jobStatusNotifier = (function(){
         return "http://" + userName + ":" + apiKey  + "@" + serverUrl + "/job/" + jobName + "/api/json?depth=0";
     }
 
+    function _queryJobStatus(queryParams, postQueryCallback){
+        var url = _constructJobStatusQueryUrl(queryParams);
+
+        $.get(url, function(response){
+            var isLatestRunSuccessful = response['color'] == 'blue';
+            var jobName = response['displayName'];
+            var imageName = isLatestRunSuccessful ? "green_info.png" : "red_info.png"
+            postQueryCallback({
+                jobName: jobName,
+                isLatestRunSuccessful: isLatestRunSuccessful,
+                imageName: imageName
+            });
+        });
+    }
+
     function _getConfiguredJobsStatuses(postQueryCallback){
         chrome.storage.sync.get({
              serverUrl: null,
@@ -19,25 +34,13 @@ window.jobStatusNotifier = (function(){
             var jobList = items['jobs'];
             var jobs = jobList.split(",");
             $.each(jobs, function(index, job){
-                var url = _constructJobStatusQueryUrl({
+                var queryParams = {
                     userName: items['userName'],
                     apiKey: items['apiKey'],
                     serverUrl: items['serverUrl'],
                     jobName: job
-                });
-
-                $.get(url, function(response){
-                    var isLatestRunSuccessful = response['color'] == 'blue';
-                    var jobName = response['displayName'];
-                    var imageName = isLatestRunSuccessful ? "green_info.png" : "red_info.png"
-//                    var statusMessage = isLatestRunSuccessful ? " is Green" : " is Red";
-                    postQueryCallback({
-                        jobName: jobName,
-                        isLatestRunSuccessful: isLatestRunSuccessful,
-                        imageName: imageName
-                    });
-                });
-
+                };
+                _queryJobStatus(queryParams, postQueryCallback);
             });
 
         });
@@ -57,46 +60,6 @@ window.jobStatusNotifier = (function(){
         };
         _getConfiguredJobsStatuses(_createNotificationHandler);
     }
-
-//    function initializeAlarmEventHandler(){
-//        chrome.alarms.onAlarm.addListener(function(alarm){
-//            if(alarm.name != 'jobStatusTimer'){
-//                return;
-//            }
-//
-//        chrome.storage.sync.get({
-//             serverUrl: null,
-//             userName: null,
-//             apiKey: null,
-//             enableNotifications: true,
-//             jobs: null
-//        }, function(items){
-//            var jobList = items['jobs'];
-//            var jobs = jobList.split(",");
-//            $.each(jobs, function(index, job){
-//                var url = _constructUrl({
-//                    userName: items['userName'],
-//                    apiKey: items['apiKey'],
-//                    serverUrl: items['serverUrl'],
-//                    jobName: job
-//                });
-//
-//                $.get(url, function(response){
-//                    var isLatestJobSuccessful = response['color'] == 'blue';
-//                    var jobName = response['displayName'];
-//                    var imageName = isLatestJobSuccessful ? "green_info.png" : "red_info.png"
-//
-//                });
-//
-//            });
-//
-//        });
-//
-//
-//
-//        });
-//    }
-
 
     return {
         alarmEventHandler: alarmEventHandler
