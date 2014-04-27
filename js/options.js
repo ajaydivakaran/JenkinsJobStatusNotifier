@@ -61,7 +61,14 @@ var optionsViewModel = (function(){
             }, function() {
             console.log("Save of primary data successful");
             updatePrimaryDataMessage('Save Successful');
+            $.notify("Save Successful");
+            chrome.alarms.clear("jobStatusTimer");
+            chrome.alarms.create("jobStatusTimer", {
+                                delayInMinutes: parseFloat(pollingFrequency()),
+                                periodInMinutes: parseFloat(pollingFrequency())
+            });
         });
+
     }
 
     _loadSettings();

@@ -5,11 +5,13 @@
     "version": "1.0",
     "permissions": [
         "http://*/",
-        "storage"
+        "storage",
+        "notifications",
+        "alarms"
     ],
     "options_page": "html/options.html",
     "background": {
-      "scripts": ["js/jobStatusNotifier.js"]
+      "page": "html/background.html"
     },
     "browser_action": {
         "default_icon": "images/green_imagelink.png",
