@@ -46,35 +46,36 @@ var optionsViewModel = (function(){
                  enableNotifications: enableNotifications.is(":checked")
             }, function() {
             $.notify("Save Successful", "success");
-            _reInitializeAlarm();
-        });
 
-    }
-
-    function _reInitializeAlarm(){
-        chrome.alarms.clear("jobStatusTimer");
-
-        var pollingFrequencyInMinutes = parseFloat(pollingFrequency.val());
-        console.log("Polling frequency: " + pollingFrequencyInMinutes);
-        chrome.alarms.create("jobStatusTimer", {
-                            delayInMinutes: pollingFrequencyInMinutes,
-                            periodInMinutes: pollingFrequencyInMinutes
-        });
-
-        var isNotificationsEnabled = enableNotifications.is(":checked");
-        console.log("Notification status: " + isNotificationsEnabled);
-        isNotificationsEnabled && _initializeAlarmEventHandler();
-    }
-
-    function _initializeAlarmEventHandler(){
-        chrome.alarms.onAlarm.addListener(function(alarm){
-            if(alarm.name != 'jobStatusTimer'){
-                return;
-            }
             var backgroundPageWindow = chrome.extension.getBackgroundPage();
-            backgroundPageWindow.jobStatusNotifier.alarmEventHandler();
+            backgroundPageWindow.jobStatusNotifier.checkAndInitializeAlarm();
         });
+
     }
+
+//    function _reInitializeAlarm(){
+//        chrome.alarms.clear("jobStatusTimer");
+//        var pollingFrequencyInMinutes = parseFloat(pollingFrequency.val());
+//        console.log("Polling frequency: " + pollingFrequencyInMinutes);
+//        chrome.alarms.create("jobStatusTimer", {
+//                            delayInMinutes: pollingFrequencyInMinutes,
+//                            periodInMinutes: pollingFrequencyInMinutes
+//        });
+//
+//        var isNotificationsEnabled = enableNotifications.is(":checked");
+//        console.log("Notification status: " + isNotificationsEnabled);
+//        isNotificationsEnabled && _initializeAlarmEventHandler();
+//    }
+
+//    function _initializeAlarmEventHandler(){
+//        chrome.alarms.onAlarm.addListener(function(alarm){
+//            if(alarm.name != 'jobStatusTimer'){
+//                return;
+//            }
+//            var backgroundPageWindow = chrome.extension.getBackgroundPage();
+//            backgroundPageWindow.jobStatusNotifier.alarmEventHandler();
+//        });
+//    }
 
     return {
         init: initialize

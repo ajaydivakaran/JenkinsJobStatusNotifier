@@ -31,12 +31,12 @@ window.jobStatusNotifier = (function(){
                 "Authorization": "Basic " + window.btoa(queryParams.userName + ":" + queryParams.apiKey)
             }
         }).done(function(response){
-            var isLatestRunSuccessful = !_hasCurrentJobRunFailed(response['color']);
+            var hasLatestRunFailed = _hasCurrentJobRunFailed(response['color']);
             var jobName = response['displayName'];
-            var imagePath = isLatestRunSuccessful ? "../images/green_info.png" : "../images/red_info.png";
+            var imagePath = hasLatestRunFailed ? "../images/red_info.png": "../images/green_info.png";
             postQueryCallback({
                 jobName: jobName,
-                isLatestRunSuccessful: isLatestRunSuccessful,
+                isLatestRunSuccessful: !hasLatestRunFailed,
                 imagePath: imagePath,
                 jobStatus: _getJobStatus(response['color'])
             });
@@ -66,23 +66,63 @@ window.jobStatusNotifier = (function(){
 
     }
 
-    function alarmEventHandler(){
+    function _alarmEventHandler(){
         var _createNotificationHandler = function(jobResult){
             var statusMessage = jobResult.isLatestRunSuccessful ? " is Green" : " is Red";
+
+            console.log(jobResult.jobName + " last run successful: " + jobResult.isLatestRunSuccessful);
 
             !jobResult.isLatestRunSuccessful && chrome.notifications.create(jobResult.jobName, {
                 type: "basic",
                 title: jobResult.jobName,
                 message: jobResult.jobName + statusMessage,
                 iconUrl: jobResult.imagePath
-            }, function(){});
+            }, function(notificationId){
+                console.log("Created notification with id:" + notificationId);
+            });
 
         };
         getConfiguredJobsStatuses(_createNotificationHandler);
     }
 
+    function checkAndInitializeAlarm(){
+        chrome.alarms.clear("jobStatusTimer");
+        chrome.alarms.onAlarm.removeListener(_alarmListener);
+
+        chrome.storage.sync.get({
+             pollingFrequency: "1",
+             enableNotifications: false
+        }, function(result){
+                if(!result['enableNotifications']){
+                    console.log("Notifications not enabled.");
+                    return;
+                }
+
+                var pollingFrequencyInMinutes = parseFloat(result['pollingFrequency']);
+                chrome.alarms.create("jobStatusTimer", {
+                            delayInMinutes: pollingFrequencyInMinutes,
+                            periodInMinutes: pollingFrequencyInMinutes
+                });
+                _initializeAlarmEventHandler();
+           });
+
+    }
+
+    function _initializeAlarmEventHandler(){
+        chrome.alarms.onAlarm.addListener(_alarmListener);
+    }
+
+    function _alarmListener(alarm){
+        console.log("Alarm triggered!");
+        if(alarm.name != 'jobStatusTimer'){
+            console.log("Skipping unwanted alarm event");
+            return;
+        }
+        _alarmEventHandler();
+    }
+
     return {
-        alarmEventHandler: alarmEventHandler,
+        checkAndInitializeAlarm: checkAndInitializeAlarm,
         getConfiguredJobStatuses: getConfiguredJobsStatuses
     };
 }());
