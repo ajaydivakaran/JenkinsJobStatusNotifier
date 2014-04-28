@@ -6,8 +6,7 @@ var popupViewModel = (function(){
     }
 
     function _renderJobStatuses(jobResult){
-        var className = jobResult.isLatestRunSuccessful ? "success" : "failure";
-        var job = $("<li class='"+ className +"'>"+ jobResult.jobName +"</li>");
+        var job = $("<li class='"+ jobResult.jobStatus +"'>"+ jobResult.jobName +"</li>");
         $("#jobStatuses").append(job);
     }
 
