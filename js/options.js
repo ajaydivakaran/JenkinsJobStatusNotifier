@@ -55,7 +55,7 @@ var optionsViewModel = (function(){
         chrome.alarms.clear("jobStatusTimer");
 
         var pollingFrequencyInMinutes = parseFloat(pollingFrequency.val());
-        console.log("Polling frequency: " + pollingFrequency);
+        console.log("Polling frequency: " + pollingFrequencyInMinutes);
         chrome.alarms.create("jobStatusTimer", {
                             delayInMinutes: pollingFrequencyInMinutes,
                             periodInMinutes: pollingFrequencyInMinutes

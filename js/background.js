@@ -1,18 +1,25 @@
 window.jobStatusNotifier = (function(){
 
     function _constructJobStatusQueryUrl(items){
-        var userName = items['userName'];
-        var apiKey = items['apiKey'];
+//        var userName = items['userName'];
+//        var apiKey = items['apiKey'];
         var serverUrl = items['serverUrl'];
         var jobName = items['jobName'];
 
-        return "http://" + userName + ":" + apiKey  + "@" + serverUrl + "/job/" + jobName + "/api/json?depth=0";
+        return "http://" + serverUrl + "/job/" + jobName + "/api/json?depth=0";
     }
 
     function _queryJobStatus(queryParams, postQueryCallback){
         var url = _constructJobStatusQueryUrl(queryParams);
 
-        $.get(url, function(response){
+        $.ajax({
+            type: "GET",
+            url: url,
+            dataType: "json",
+            headers: {
+                "Authorization": "Basic " + window.btoa(queryParams.userName + ":" + queryParams.apiKey)
+            }
+        }).done(function(response){
             var isLatestRunSuccessful = response['color'] == 'blue';
             var jobName = response['displayName'];
             var imagePath = isLatestRunSuccessful ? "../images/green_info.png" : "../images/red_info.png";
