@@ -53,30 +53,6 @@ var optionsViewModel = (function(){
 
     }
 
-//    function _reInitializeAlarm(){
-//        chrome.alarms.clear("jobStatusTimer");
-//        var pollingFrequencyInMinutes = parseFloat(pollingFrequency.val());
-//        console.log("Polling frequency: " + pollingFrequencyInMinutes);
-//        chrome.alarms.create("jobStatusTimer", {
-//                            delayInMinutes: pollingFrequencyInMinutes,
-//                            periodInMinutes: pollingFrequencyInMinutes
-//        });
-//
-//        var isNotificationsEnabled = enableNotifications.is(":checked");
-//        console.log("Notification status: " + isNotificationsEnabled);
-//        isNotificationsEnabled && _initializeAlarmEventHandler();
-//    }
-
-//    function _initializeAlarmEventHandler(){
-//        chrome.alarms.onAlarm.addListener(function(alarm){
-//            if(alarm.name != 'jobStatusTimer'){
-//                return;
-//            }
-//            var backgroundPageWindow = chrome.extension.getBackgroundPage();
-//            backgroundPageWindow.jobStatusNotifier.alarmEventHandler();
-//        });
-//    }
-
     return {
         init: initialize
     };
