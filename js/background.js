@@ -72,7 +72,7 @@ window.jobStatusNotifier = (function(){
 
             console.log(jobResult.jobName + " last run successful: " + jobResult.isLatestRunSuccessful);
 
-            !jobResult.isLatestRunSuccessful && chrome.notifications.create(jobResult.jobName, {
+            !jobResult.isLatestRunSuccessful && chrome.notifications.create("", {
                 type: "basic",
                 title: jobResult.jobName,
                 message: jobResult.jobName + statusMessage,
