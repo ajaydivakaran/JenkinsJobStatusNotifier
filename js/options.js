@@ -18,6 +18,7 @@ var optionsViewModel = (function(){
         enableNotifications = $("#enableNotifications");
         $("#updateData").on('click', _updatePrimaryData);
         $("#selectJobs").on('click', _showJobSelectionDialog);
+        $("#addJobs").on('click', _updateSelectedJobs);
         _loadSettings();
         _initalizeJobSelectionialog();
     }
@@ -59,6 +60,7 @@ var optionsViewModel = (function(){
                jobList.append("<li>" + job.name + "</li>")
             });
             jobList.selectable();
+            _preSelectConfiguredJobs();
             jobListSection.show();
         }).error(function(jqXHR, textStatus, errorThrown){
             loadingJobsMessage.hide();
@@ -68,6 +70,15 @@ var optionsViewModel = (function(){
         jobSelectionDialog.dialog("open");
     }
 
+    function _preSelectConfiguredJobs(){
+        $.each($("#jobList li"), function(index, jobItem){
+            var $jobItem = $(jobItem);
+            if($.inArray($jobItem.text().trim(), selectedJobs) > -1){
+                $jobItem.addClass('ui-selected');
+            }
+        });
+    }
+
     function _loadSettings(){
         chrome.storage.sync.get({
              serverUrl: null,
@@ -75,14 +86,14 @@ var optionsViewModel = (function(){
              apiKey: null,
              pollingFrequency: "5",
              enableNotifications: true,
-             jobs: null
+             jobs: []
         }, function(items){
            serverUrl.val(items['serverUrl']);
            userName.val(items['userName']);
            apiKey.val(items['apiKey']);
            pollingFrequency.val(items['pollingFrequency']);
            enableNotifications.prop("checked", items['enableNotifications']);
-           selectedJobs = items['jobs'];
+           selectedJobs = items['jobs'].split(',');
         });
     }
 
@@ -168,6 +179,19 @@ var optionsViewModel = (function(){
                _validateServerUrlFormat() &&
               _validateServerUrlAndCredentials() &&
               _validatePollingFrequencyIsValid();
+    }
+
+    function _updateSelectedJobs(){
+        selectedJobs = [];
+        $.each($("#jobList li.ui-selected"), function(index, selectedJob){
+            selectedJobs.push($(selectedJob).text().trim());
+        });
+        chrome.storage.sync.set({
+         jobs: selectedJobs.join(',')
+            }, function() {
+            jobSelectionDialog.dialog('close');
+            _showSuccessMessage("Save Successful");
+        });
     }
 
     function _updatePrimaryData(){

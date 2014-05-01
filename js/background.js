@@ -18,6 +18,8 @@ window.jobStatusNotifier = (function(){
             return 'success_building';
         else if(currentJobColor == 'red_anime')
             return 'failure_building';
+        else if(currentJobColor == 'disabled')
+            return 'disabled';
         else
             return 'failure';
     }
