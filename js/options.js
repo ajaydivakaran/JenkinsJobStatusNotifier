@@ -6,6 +6,8 @@ var optionsViewModel = (function(){
     var apiKey;
     var pollingFrequency;
     var enableNotifications;
+    var jobSelectionDialog;
+    var selectedJobs = [];
 
     function initialize(){
         jobs = $("#jobs");
@@ -15,7 +17,55 @@ var optionsViewModel = (function(){
         pollingFrequency = $("#pollingFrequency");
         enableNotifications = $("#enableNotifications");
         $("#updateData").on('click', _updatePrimaryData);
+        $("#selectJobs").on('click', _showJobSelectionDialog);
         _loadSettings();
+        _initalizeJobSelectionialog();
+    }
+
+    function _initalizeJobSelectionialog(){
+        jobSelectionDialog = $("#jobSelectionDialog").dialog({
+            autoOpen: false,
+            modal:true,
+            resizable: false,
+            width: '450px',
+            position: 'top'
+        });
+    }
+
+    function _showJobSelectionDialog(){
+        var jobListSection = $("#jobListSection");
+        jobListSection.hide();
+
+        var jobList = $("#jobList");
+        jobList.html("");
+
+        var jobFetchErrorMessage = $("#jobsFetchErrorMessage");
+        jobFetchErrorMessage.hide();
+
+        var loadingJobsMessage = $("#loadingJobsMessage");
+        loadingJobsMessage.show();
+
+        $.ajax({
+            type: "GET",
+            url: "http://" + serverUrl.val().trim() + "/api/json?depth=0",
+            dataType: "json",
+            async: true,
+            headers: {
+                "Authorization": "Basic " + window.btoa(userName.val().trim() + ":" + apiKey.val().trim())
+            }
+        }).done(function(response){
+            loadingJobsMessage.hide();
+            $.each(response.jobs, function(index, job){
+               jobList.append("<li>" + job.name + "</li>")
+            });
+            jobList.selectable();
+            jobListSection.show();
+        }).error(function(jqXHR, textStatus, errorThrown){
+            loadingJobsMessage.hide();
+            jobFetchErrorMessage.show();
+        });
+
+        jobSelectionDialog.dialog("open");
     }
 
     function _loadSettings(){
@@ -32,7 +82,7 @@ var optionsViewModel = (function(){
            apiKey.val(items['apiKey']);
            pollingFrequency.val(items['pollingFrequency']);
            enableNotifications.prop("checked", items['enableNotifications']);
-           jobs.val(items['jobs']);
+           selectedJobs = items['jobs'];
         });
     }
 

@@ -3,11 +3,24 @@
 <head>
     <title>Configure Jenkins's Job Status Notifier</title>
     <script src="../libs/jquery-1.11.0.min.js"></script>
+    <script src="../libs/jquery-ui-1.10.4.custom.min.js"></script>
     <script src="../libs/notify.min.js"></script>
     <script src="../js/options.js"></script>
+    <link rel="stylesheet" href="../css/jquery-ui-1.10.4.custom.min.css">
 
     <style>
-        input{
+        #heading{
+            background: orange;
+            color: white;
+            width: 399px;
+            height: 30px;
+            border-style: solid;
+            text-align: center;
+            border-color: black;
+            font-weight: bold;
+            font-size: 130%;
+        }
+        .primary_input input{
             width: 200px;
             height: 20px;
         }
@@ -23,6 +36,9 @@
         #pollingFrequency{
             width: 50px;
         }
+        #apiKey{
+            width: 250px;
+        }
         #enableNotifications{
             height: 14px;
             width: auto;
@@ -33,10 +49,36 @@
         .error{
             border-color: red;
         }
+        .primary_input button{
+            width: 100px;
+            height: 25px;
+            margin: 5px;
+        }
+        #loadingJobsMessage{
+            margin-left: 41%;
+            margin-top: 11%;
+        }
+        .primary_input{
+            background-color: rgba(208, 208, 208, 0.49);
+        }
     </style>
+
+    <style>
+          #jobList .ui-selecting { background: #FECA40; }
+          #jobList .ui-selected { background: #F39814; color: white; }
+          #jobList { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+          #jobList{
+              overflow-y: scroll;
+              height: 300px;
+              width: 425px;
+          }
+          #addJobs{
+              margin-top: 10px;
+          }
+   </style>
 </head>
 <body>
-    <h3>Configure Jenkin's Job Status Notifier</h3>
+    <div id="heading">Configure Jenkin's Job Status Notifier</div>
     <div class="primary_input">
         <div class="input_field_section">
             <label for="serverUrl">Jenkin's Server URL:</label>
@@ -59,11 +101,22 @@
             <input type="checkbox" id="enableNotifications" />
         </div>
          <div class="input_field_section">
-            <label for="jobs">Jobs:</label>
-            <input type="text" id="jobs" placeholder="Enter Job names comma separated" />
+            <label for="selectJobs">Jobs:</label>
+            <!--<input type="text" id="jobs" placeholder="Enter Job names comma separated" />-->
+            <Button id="selectJobs">Select Jobs</Button>
         </div>
         <div>
             <Button id="updateData">Update</Button>
+        </div>
+    </div>
+    <div id="jobSelectionDialog" title="Select Jobs">
+        <div id="dialogContent">
+            <div id="jobListSection">
+                <ul id="jobList"></ul>
+                <Button id="addJobs">Add/Update Jobs</Button>
+            </div>
+            <div id="loadingJobsMessage">Loading Jobs....</div>
+            <div id="jobsFetchErrorMessage" style="display: none">Error: Verify server url and credentials</div>
         </div>
     </div>
 </body>
