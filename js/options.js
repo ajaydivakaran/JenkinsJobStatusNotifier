@@ -202,7 +202,6 @@ var optionsViewModel = (function(){
         }
 
         chrome.storage.sync.set({
-                 jobs: jobs.val().trim(),
                  serverUrl: serverUrl.val().trim(),
                  userName: userName.val().trim(),
                  apiKey: apiKey.val().trim(),

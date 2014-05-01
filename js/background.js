@@ -52,7 +52,7 @@ window.jobStatusNotifier = (function(){
              serverUrl: null,
              userName: null,
              apiKey: null,
-             jobs: null
+             jobs: ""
         }, function(items){
             var jobList = items['jobs'];
             var jobs = jobList.split(",");
