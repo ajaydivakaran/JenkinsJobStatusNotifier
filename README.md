@@ -15,7 +15,7 @@ to tell me the job statuses.
 
 
 ### Plugin configuration screen ######
-![Plugin configuration image](/images/options_screenshot.png "Plugin configuration screen")
+
 
 
 Steps to install
