@@ -48,7 +48,7 @@ var optionsViewModel = (function(){
 
         $.ajax({
             type: "GET",
-            url: serverUrl.val().trim() + "/api/json?depth=0",
+            url: urlHelper.normalizeUrl(serverUrl.val().trim()) + "/api/json?depth=0",
             dataType: "json",
             async: true,
             headers: {
@@ -138,7 +138,7 @@ var optionsViewModel = (function(){
 
     function _validateServerUrlFormat(){
         var url = serverUrl.val().trim();
-        if(url.match(/^https?:\/\/\d+\.\d+\.\d+\.\d+(:\d+)?$/)){
+        if(url.match(/^(https?:\/\/)?\d+\.\d+\.\d+\.\d+(:\d+)?(\/)?$/)){
             return true;
         }
         serverUrl.addClass('error');
@@ -150,7 +150,7 @@ var optionsViewModel = (function(){
         var isSuccessful = true;
         $.ajax({
             type: "GET",
-            url: serverUrl.val().trim() + "/api/json?depth=0",
+            url: urlHelper.normalizeUrl(serverUrl.val().trim()) + "/api/json?depth=0",
             dataType: "json",
             async: false,
             headers: {
