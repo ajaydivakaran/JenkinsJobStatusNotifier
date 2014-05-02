@@ -24,5 +24,10 @@ Post installation steps
 -----------------------
 
 1. Navigate to the options page.
-2. Enter details
+2. Enter the Jenkin's server url. The url should be of the format <ip-address>:<port>
+3. Enter the user-name and API key (note: the user-name/api-key should have read permissions for Jenkin's jobs)
+4. Polling frequency in minutes along with marking the check-box if you want to receive notifications for job failures.
+5. Select the jobs to be monitored.
+6. Finally click on update.
+
 
