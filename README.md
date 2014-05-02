@@ -9,9 +9,12 @@ As a lazy developer, I don't want to look at the build monitor or always login t
 Given I almost always have Chrome open, I want the browser to tell me when the currently configured jobs fail or a one-click link (icon near my address bar)
 to tell me the job statuses.
 
+### Popup showing job statuses ######
+
 ![Popup image](/images/popup_screenshot.png "Popup showing job statuses")
 
 
+### Plugin configuration screen ######
 ![Plugin configuration image](/images/options_screenshot.png "Plugin configuration screen")
 
 
