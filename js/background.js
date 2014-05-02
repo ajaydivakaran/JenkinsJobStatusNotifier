@@ -4,7 +4,7 @@ window.jobStatusNotifier = (function(){
         var serverUrl = items['serverUrl'];
         var jobName = items['jobName'];
 
-        return "http://" + serverUrl + "/job/" + jobName + "/api/json?depth=0";
+        return serverUrl + "/job/" + jobName + "/api/json?depth=0";
     }
 
     function _hasCurrentJobRunFailed(currentJobColor){
