@@ -37,16 +37,21 @@
             white-space: nowrap;
             margin: 3px;
         }
-        #optionsPageLink{
-            text-align: right;
+        a{
             display: block;
-            font-weight: bold;
             font-size: 80%;
+            font-weight: bold;
+            text-align: right;
         }
     </style>
 </head>
 <body>
-    <a id="optionsPageLink" href="javascript:void(0);">Configure jobs</a>
+    <div>
+        <a id="optionsPageLink" href="javascript:void(0);">Configure Jobs</a>
+    </div>
     <ul id="jobStatuses"></ul>
+     <div>
+        <a id="refresh_jobs" href="javascript:void(0);">Refresh</a>
+    </div>
 </body>
 </html>

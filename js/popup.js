@@ -7,10 +7,18 @@ var popupViewModel = (function(){
     }
 
     function initialize(){
-        optionsLink = $("#optionsPageLink");
+        var optionsLink = $("#optionsPageLink");
         optionsLink.on('click', _optionsLinkClickHandler);
 
+        var refreshJobsLink = $("#refresh_jobs");
+        optionsLink.on('click', _refreshJobs);
+
+        _refreshJobs();
+    }
+
+    function _refreshJobs(){
         var backgroundPageWindow = chrome.extension.getBackgroundPage();
+        $("#jobStatuses").html('');
         backgroundPageWindow.jobStatusNotifier.getConfiguredJobStatuses(_renderJobStatuses);
     }
 
